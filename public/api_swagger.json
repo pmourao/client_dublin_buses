@@ -1,0 +1,181 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "API Bus",
+    "version": "1.0",
+    "description": "A API descrition of a PoC to expose a database of the public transports in Dublin "
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:5000"
+    }
+  ],
+  "paths": {
+    "/api/v1/": {
+      "get": {
+        "summary": "API version",
+        "description": "root",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid time-frame"
+          },
+          "404": {
+            "description": "Operators not found"
+          }
+        }
+      }
+    },
+    "/api/v1/operators?start={start}?end={end}": {
+      "get": {
+        "tags": [
+          "Operators"
+        ],
+        "summary": "Available Operators in a interval of time",
+        "description": "Returns list of available Operators",
+        "parameters": [
+          {
+            "name": "start",
+            "in": "path",
+            "description": "start-time",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end",
+            "in": "path",
+            "description": "end-time",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid time-frame"
+          },
+          "404": {
+            "description": "Operators not found"
+          }
+        }
+      }
+    },
+    "/api/v1/vehicles?start={start}?end={end}&operator={operator}&atstop={atstop}": {
+      "get": {
+        "tags": [
+          "Vehicles"
+        ],
+        "summary": "Given a time frame [start-time, end-time] an Operator and the status return the list of vehicle IDs",
+        "description": "Returns list of all Vehicle IDs available or a filtered list by the status of the vehicle",
+        "parameters": [
+          {
+            "name": "start",
+            "in": "path",
+            "description": "start-time",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end",
+            "in": "path",
+            "description": "end-time",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "operatorId",
+            "in": "path",
+            "description": "ID of Operator",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "stop",
+            "in": "path",
+            "description": "ID of Fleet",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid parameters"
+          },
+          "404": {
+            "description": "not found"
+          }
+        }
+      }
+    },
+    "/api/v1/vehicle/{vehicleId}?start={start}?end={end}": {
+      "get": {
+        "tags": [
+          "Vehicle Position"
+        ],
+        "summary": "Given a time frame [start-time, end-time] and a vehicle, return the trace of that vehicle (GPS entries, ordered by timestamp).",
+        "description": "return the list of locations (Lat, Lon) ordered by time",
+        "parameters": [
+          {
+            "name": "start",
+            "in": "path",
+            "description": "start-time",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end",
+            "in": "path",
+            "description": "end-time",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "vehicleId",
+            "in": "path",
+            "description": "ID of vehicle",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid parameters"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    }
+  }
+}
