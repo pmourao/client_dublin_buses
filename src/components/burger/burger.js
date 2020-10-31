@@ -15,7 +15,7 @@ const links = [
 //disableCloseOnEsc disableOverlayClick isOpen={ true }
 const Burger = props => (
   <MenuContainer>
-    <Menu  id="slide" noOverlay disableCloseOnEsc  pageWrapId="page-wrap" outerContainerId="main" right>
+    <Menu  id="slide" noOverlay  pageWrapId="page-wrap" outerContainerId="main" right>
       {links.map(
         ({ link, text }) =>
           props.location.pathname.replace(/^\/+/, '') === link ? (
@@ -33,8 +33,6 @@ const Burger = props => (
 export default withRouter(Burger);
 
 const MenuContainer = styled.div`
- 
-
 
 `;
 // display: none;

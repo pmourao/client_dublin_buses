@@ -5,7 +5,7 @@ import Content from '../components/content';
 
 const contentIntroduction1 = {
   title: 'About',
-  text: `In this PoC, `,
+  text: `In this PoC lksdjhfklghdslkjfhdslkihfl, `,
 };
 
 export default class extends React.Component {

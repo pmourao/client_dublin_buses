@@ -231,5 +231,33 @@ button {
   font-weight: 800;
 }
 
-// @import '~slick-carousel/slick/slick.css';
-// @import '~slick-carousel/slick/slick-theme.css';
+
+.react-datepicker-wrapper,
+.react-datepicker__input-container,
+.react-datepicker__input-container input {
+  height: 30px;
+  color: black;
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 33px;
+  position: relative;
+  box-sizing: border-box;
+  font-family: 'Nunito Sans';
+  -webkit-box-align: center;
+  align-items: center;
+  background-color: #7FC210;
+  border-color: hsl(0,0%,80%);
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 1px;
+  flex-wrap: wrap;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
+  min-height: 38px;
+  outline: 0 !important;
+  position: relative;
+  transition: all 100ms;
+  box-sizing: border-box;
+  align-content: center;
+}
+

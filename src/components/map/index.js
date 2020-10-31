@@ -11,14 +11,15 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
 const mapControls = new Controls();
-
+const api_base_url = "https://api-l3qyhmfh2a-ew.a.run.app"
+const mapbox_url = "mapbox://styles/pmourao89/ckgs56su80vqo19px9kluuvq3"
 class Map extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       viewport: {
-        latitude: 53.350140,
-        longitude: -6.266155,
+        latitude: 53.338214,
+        longitude: -6.350259,
         zoom: 11.5,
         bearing: 0,
         pitch: 15,
@@ -27,16 +28,15 @@ class Map extends React.Component {
       },
       popupInfo: null,
       mapHeight: 900,
-      devices: props.devices,
       operators: [],
       vehicles: [],
       positions: [],
       loadingPositions: false,
       loadingOperator: false,
       loadingVehicles: false,
-      startDate: new Date(2012, 11, 8, 0, 0, 1),
-      endDate: new Date(2012, 11, 8, 0, 1, 3),
-      operator: 'CD',
+      startDate: new Date(2012, 11, 8, 0, 0, 0),
+      endDate: new Date(2012, 11, 8, 0, 30, 0),
+      operatorId: 'CD',
       vehicleId: '33352'
     };
     this.openPopup = this.openPopup.bind(this);
@@ -48,13 +48,13 @@ class Map extends React.Component {
     this.getVehiclePositions = this.getVehiclePositions.bind(this);
     this.handleVehicleChange = this.handleVehicleChange.bind(this);
     this.handleOperatorChange = this.handleOperatorChange.bind(this);
-    this.isWeekday = this.isWeekday.bind(this);
+    this.filterDay = this.filterDay.bind(this);
   }
 
   componentDidMount() {
-    this.getOperators()
-    this.getVehicles()
-    this.getVehiclePositions()
+    this.getOperators(this.state.startDate, this.state.endDate)
+    this.getVehicles(this.state.operatorId)
+    this.getVehiclePositions(this.state.vehicleId)
     window.addEventListener('resize', this.resize);
     this.resize();
   }
@@ -63,24 +63,30 @@ class Map extends React.Component {
     window.removeEventListener('resize', this.resize);
   }
 
-  getOperators() {
+  getOperators(start, end) {
     this.setState({
       loadingOperator: true
 
     });
     var operators = []
-    let startStr = + this.state.startDate.getUTCFullYear() + "-" + parseInt(this.state.startDate.getMonth()) + "-" + ('0' + this.state.startDate.getDate()).substr(-2)
-     + 'T' + ('0' + this.state.startDate.getHours()).substr(-2) + ':' + ('0' + this.state.startDate.getMinutes()).substr(-2) + ':' + ('0' + this.state.startDate.getSeconds()).substr(-2);
-    let endStr = this.state.endDate.getUTCFullYear() + "-" + parseInt(this.state.endDate.getMonth()) + "-" + ('0' + this.state.endDate.getDate()).substr(-2)
-     + 'T' + ('0' + this.state.endDate.getHours()).substr(-2) + ':' + ('0' + this.state.endDate.getMinutes()).substr(-2) + ':' + ('0' + this.state.endDate.getSeconds()).substr(-2);
-    const apiUrl = 'http://127.0.0.1:5000/v1/operators?start=' + startStr + '&end=' + endStr;
-    console.log(apiUrl)
+    
+    let startStr = + start.getUTCFullYear() + "-" + parseInt(start.getMonth()) + "-" + ('0' + start.getDate()).substr(-2)
+     + 'T' + ('0' + this.state.startDate.getHours()).substr(-2) + ':' + ('0' + start.getMinutes()).substr(-2) + ':' + ('0' + start.getSeconds()).substr(-2);
+    
+    let endStr = end.getUTCFullYear() + "-" + parseInt(end.getMonth()) + "-" + ('0' + end.getDate()).substr(-2)
+     + 'T' + ('0' + end.getHours()).substr(-2) + ':' + ('0' + end.getMinutes()).substr(-2) + ':' + ('0' + end.getSeconds()).substr(-2);
+    
+    const apiUrl = api_base_url + '/v1/operators?start=' + startStr + '&end=' + endStr;
+    
     fetch(apiUrl, {
       crossDomain: true,
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     })
-      .then(response => response.json())
+      .then(response => {
+        if(!response.ok) throw new Error(response.status);
+        else return response.json();
+        })
       .then(responseJson => {
         responseJson['response']['operators'].forEach(elem => operators.push(
           {
@@ -90,24 +96,32 @@ class Map extends React.Component {
         ));
         this.setState({
           operators: operators,
-          loadingOperator: false
+          loadingOperator: false,
         });
-      }
-      )
+      })
+      .catch((error) => {
+          console.log('error: ' + error);
+          this.setState({ 
+              requestFailed: true,
+              loadingOperator: false, });
+      });
   }
 
-  getVehicles() {
+  getVehicles(operatorId) {
     this.setState({
       loadingVehicles: true,
     });
     var vehicles = []
     var vehicles_labels = []
+    
     let startStr = + this.state.startDate.getUTCFullYear() + "-" + parseInt(this.state.startDate.getMonth())+ "-" + ('0' + this.state.startDate.getDate()).substr(-2)
      + 'T' + ('0' + this.state.startDate.getHours()).substr(-2) + ':' + ('0' + this.state.startDate.getMinutes()).substr(-2) + ':' + ('0' + this.state.startDate.getSeconds()).substr(-2);
+    
     let endStr = this.state.endDate.getUTCFullYear() + "-" + parseInt(this.state.endDate.getMonth()) + "-" + ('0' + this.state.endDate.getDate()).substr(-2)
      + 'T' + ('0' + this.state.endDate.getHours()).substr(-2) + ':' + ('0' + this.state.endDate.getMinutes()).substr(-2) + ':' + ('0' + this.state.endDate.getSeconds()).substr(-2);
-    const apiUrl = 'http://127.0.0.1:5000/v1/vehicles?start=' + startStr + '&end=' + endStr + '&operator=' + this.state.operatorId + '&atstop=false';
-    console.log(apiUrl)
+    
+    const apiUrl = api_base_url + '/v1/vehicles?start=' + startStr + '&end=' + endStr + '&operator=' + operatorId + '&atstop=false';
+    
     fetch(apiUrl, {
       crossDomain: true,
       method: 'GET',
@@ -131,21 +145,29 @@ class Map extends React.Component {
           loadingVehicles: false,
         });
         this.forceUpdate();
-      }
-      )
+      })
+      .catch((error) => {
+          console.log('error: ' + error);
+          this.setState({ 
+              requestFailed: true,
+              loadingOperator: false, });
+      });
   }
-  getVehiclePositions() {
+
+  getVehiclePositions(vehicleId) {
     this.setState({
       loadingVehicles: true,
     });
-    console.log(this.state.vehicleId)
     var positions = []
+    
     let startStr = + this.state.startDate.getUTCFullYear() + "-" + parseInt(this.state.startDate.getMonth()) + "-" + ('0' + this.state.startDate.getDate()).substr(-2)
      + 'T' + ('0' + this.state.startDate.getHours()).substr(-2) + ':' + ('0' + this.state.startDate.getMinutes()).substr(-2) + ':' + ('0' + this.state.startDate.getSeconds()).substr(-2);
+    
     let endStr = this.state.endDate.getUTCFullYear() + "-" + parseInt(this.state.endDate.getMonth()) + "-" + ('0' + this.state.endDate.getDate()).substr(-2)
      + 'T' + ('0' + this.state.endDate.getHours()).substr(-2) + ':' + ('0' + this.state.endDate.getMinutes()).substr(-2) + ':' + ('0' + this.state.endDate.getSeconds()).substr(-2);
-    const apiUrl = 'http://127.0.0.1:5000/v1/vehicles/' + this.state.vehicleId + '?start=' + startStr + '&end=' + endStr;
-    console.log(apiUrl)
+    
+    const apiUrl = api_base_url + '/v1/vehicles/' + vehicleId + '?start=' + startStr + '&end=' + endStr;
+    
     fetch(apiUrl, {
       crossDomain: true,
       method: 'GET',
@@ -153,7 +175,6 @@ class Map extends React.Component {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log(responseJson)
         responseJson['response']['locations'].forEach((elem, index) => positions.push(
           {
             'id': index,
@@ -166,13 +187,18 @@ class Map extends React.Component {
           positions: positions,
           loadingVehicles: false,
         });
-      }
-      )
+      })
+      .catch((error) => {
+          console.log('error: ' + error);
+          this.setState({ 
+              requestFailed: true,
+              loadingOperator: false, });
+      });
     this.setState({
       positions: positions,
     });
-
   }
+
   resize() {
     const mapHeight = window.innerHeight //  < 760 ? 500 : 900;
     this.setState({
@@ -184,11 +210,13 @@ class Map extends React.Component {
       mapHeight,
     });
   }
+
   updateViewport(viewport) {
     this.setState({
       viewport: { ...this.state.viewport, ...viewport },
     });
   }
+
   renderPopup() {
     const { popupInfo } = this.state;
     return (
@@ -206,8 +234,9 @@ class Map extends React.Component {
         >
           <SensorCard >
             <CardHeader>
+              <span style={{color:"black"}}>Time: {popupInfo.time}</span><br></br>
               <span style={{color:"black"}}>Lat: {popupInfo.lat}</span><br></br>
-              <span style={{color:"black"}}>Lon: {popupInfo.lon}</span>
+              <span style={{color:"black"}}>Lon: {popupInfo.lon}</span><br></br>
             </CardHeader>
           </SensorCard>
         </Popup>
@@ -217,30 +246,45 @@ class Map extends React.Component {
 
   openPopup(device) {
     this.setState({ popupInfo: device });
-    //this.getData()
   }
 
   handleVehicleChange = (newValue) => {
     this.setState({ vehicleId: newValue['label'] });
 
-    console.log(newValue['label'])
-    this.getVehiclePositions();
+    this.getVehiclePositions(newValue['label']);
     return newValue;
   }
+
   handleOperatorChange = (newValue) => {
-    console.log(newValue['label'])
-    this.setState({ operatorId: newValue['label'] });
-    this.getVehicles();
+    this.setState({ 
+      operatorId: newValue['label'],
+      positions : [],
+      vehicleId : "Select one Vehicle"
+     });
+    this.getVehicles(newValue['label']);
     return newValue;
   }
-  isWeekday = date => {
+
+  filterDay = date => {
     const day = new Date(2012, 8, 25)
     return (day === date);
   };
 
   render() {
-    const {  viewport, mapHeight, popupInfo, loadingOperator, loadingVehicles, vehicles, operators, positions, vehicleId, operatorId, startDate, endDate } = this.state;
-    console.log(positions)
+    const {  
+      viewport,
+      mapHeight,
+      popupInfo,
+      loadingOperator,
+      loadingVehicles,
+      vehicles,
+      positions,
+      operators,
+      vehicleId,
+      operatorId,
+      startDate,
+      endDate } = this.state;
+
     const theme = theme => ({
       ...theme,
       colors: {
@@ -252,43 +296,50 @@ class Map extends React.Component {
       textColor: 'white',
       width: 50,
     });
+    
     return (
       <Main id="map">
         <Header>
           <div>
             <Heading>Filters</Heading>
-            <Subtitle>Use the filters assuming the available day 8/11/2012.</Subtitle>
             <FilterRow >
-              Start date
+              Start date<br/>
               <DatePicker
                 showTimeSelect
                 selected={startDate}
-                dateFormat='dd.MM.yy HH:MM:SS'
-                filterDate={this.isWeekday}
-                onChange={date => this.setState({
+                dateFormat='dd.MM.yy HH:mm:ss'
+                filterDate={this.filterDay}
+                onChange={(date) => {
+                this.setState({
                   startDate: date,
-                })}
-                theme={theme}
+                  operatorId : "Select one Operator",
+                  vehicleId : ""
+                })
+                this.getOperators(date, endDate)
+                }
+                }
               />
             </FilterRow>
             <FilterRow >
-              End date
+              End date<br/>
              <DatePicker
                 showTimeSelect
                 selected={endDate}
-                dateFormat='dd.MM.yy HH:MM:SS'
-                filterDate={this.isWeekday}
-                onChange={date => this.setState({
-                  endDate: date,
-                })}
-                theme={theme}
+                dateFormat='dd.MM.yy HH:mm:ss'
+                filterDate={this.filterDay}
+                onChange={(date) =>{
+                this.setState({endDate: date,})
+                this.getOperators(startDate, date)
+                }}
               />
             </FilterRow>
             <FilterRow >
-              Operators <p>   </p>
+              Operators<br/>
               <Select
                 className="select"
-                defaultValue={operatorId}
+                defaultValue={{ label: operatorId, value: operatorId }}
+                value={{ label: operatorId, value: operatorId }}
+
                 isDisabled={false}
                 isLoading={loadingOperator}
                 isClearable={false}
@@ -301,11 +352,12 @@ class Map extends React.Component {
               />
             </FilterRow>
             <FilterRow >
-              Vehicles<p>   </p>
+              Vehicles<br/>
               <Select
                 className="select2"
                 isDisabled={false}
-                defaultValue={vehicleId}
+                defaultValue={{ label: vehicleId, value: vehicleId }}
+                value={{ label: vehicleId, value: vehicleId }}
                 isLoading={loadingVehicles}
                 isClearable={false}
                 isRtl={false}
@@ -316,7 +368,6 @@ class Map extends React.Component {
                 onChange={this.handleVehicleChange}
               />
             </FilterRow>
-
           </div>
         </Header>
         <MapGL
@@ -325,14 +376,14 @@ class Map extends React.Component {
           maxZoom={15}
           {...viewport}
           height={mapHeight}
-          mapStyle="mapbox://styles/pmourao89/ckgs56su80vqo19px9kluuvq3"
+          mapStyle={mapbox_url}
           onViewportChange={this.updateViewport}
           onClick={() => (popupInfo ? this.setState({ popupInfo: null }) : null)}
           mapboxApiAccessToken="pk.eyJ1IjoicG1vdXJhbzg5IiwiYSI6ImNqaDd1ZXBxaDAwNncyeHFsd3dhbDAybnoifQ.qJue5EWgp3BoYfnfiCW7JA">
           <div style={{ position: 'absolute', left: 20, bottom: 50 }}>
             <NavigationControl onViewportChange={this.updateViewport} />
           </div>
-          <Markers positions={this.state.positions} openPopup={this.openPopup} />
+          <Markers positions={positions} openPopup={this.openPopup} />
           {this.renderPopup()}
         </MapGL>
       </Main>
@@ -399,23 +450,6 @@ const Heading = styled.h3`
   }
 `;
 
-const Subtitle = styled.h4`
-  font-size: 19px;
-  font-weight: 400;
-  line-height: 33px;
-  margin-bottom: 60px;
-  max-width: 265px;
-  color: #fff;
-  text-align: left;
-  @media (max-width: 1120px) {
-    max-width: 215px;
-  }
-  @media (max-width: 760px) {
-    font-size: 18px;
-    line-height: 28px;
-  }
-`;
-
 const FilterRow = styled.h4`
   font-size: 19px;
   font-weight: 400;
@@ -434,6 +468,8 @@ const FilterRow = styled.h4`
 `;
 
 const SensorCard = styled(Link)`
+  position: relative;
+  box-sizing: border-box;
   display: block;
   border-radius: 6px;
   transition: box-shadow 0.19s ease-out;
@@ -442,8 +478,8 @@ const SensorCard = styled(Link)`
   cursor: default;
   color: inherit;
   text-decoration: none;
-  width: 200px;
-  height: 80px;
+  width: 350px;
+  height: 90px;
   padding-top: 19px;
   border: none;
   background-color: #7FC210;

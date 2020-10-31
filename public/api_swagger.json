@@ -1,35 +1,35 @@
 {
   "openapi": "3.0.2",
   "info": {
-    "title": "API Bus",
+    "title": "API Dublin Buses",
     "version": "1.0",
     "description": "A API descrition of a PoC to expose a database of the public transports in Dublin "
   },
   "servers": [
     {
-      "url": "http://127.0.0.1:5000"
+      "url": "https://api-l3qyhmfh2a-ew.a.run.app"
     }
   ],
   "paths": {
-    "/api/v1/": {
+    "/v1/": {
       "get": {
         "summary": "API version",
         "description": "root",
         "parameters": [],
         "responses": {
           "200": {
-            "description": "successful operation"
+            "description": "Successful operation"
           },
           "400": {
             "description": "Invalid time-frame"
           },
           "404": {
-            "description": "Operators not found"
+            "description": "Endpoint not found"
           }
         }
       }
     },
-    "/api/v1/operators?start={start}?end={end}": {
+    "/v1/operators?start={start}?end={end}": {
       "get": {
         "tags": [
           "Operators"
@@ -39,21 +39,24 @@
         "parameters": [
           {
             "name": "start",
-            "in": "path",
+            "in": "query",
             "description": "start-time",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "date-time"
             }
           },
           {
             "name": "end",
-            "in": "path",
+            "in": "query",
             "description": "end-time",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "date-time"
             }
+
           }
         ],
         "responses": {
@@ -69,7 +72,7 @@
         }
       }
     },
-    "/api/v1/vehicles?start={start}?end={end}&operator={operator}&atstop={atstop}": {
+    "/v1/vehicles?start={start}?end={end}&operator={operator}&atstop={atstop}": {
       "get": {
         "tags": [
           "Vehicles"
@@ -79,7 +82,7 @@
         "parameters": [
           {
             "name": "start",
-            "in": "path",
+            "in": "query",
             "description": "start-time",
             "required": true,
             "schema": {
@@ -88,7 +91,7 @@
           },
           {
             "name": "end",
-            "in": "path",
+            "in": "query",
             "description": "end-time",
             "required": true,
             "schema": {
@@ -97,7 +100,7 @@
           },
           {
             "name": "operatorId",
-            "in": "path",
+            "in": "query",
             "description": "ID of Operator",
             "required": true,
             "schema": {
@@ -106,7 +109,7 @@
           },
           {
             "name": "stop",
-            "in": "path",
+            "in": "query",
             "description": "ID of Fleet",
             "required": true,
             "schema": {
@@ -127,7 +130,7 @@
         }
       }
     },
-    "/api/v1/vehicle/{vehicleId}?start={start}?end={end}": {
+    "/v1/vehicle/{vehicleId}?start={start}?end={end}": {
       "get": {
         "tags": [
           "Vehicle Position"
@@ -137,7 +140,7 @@
         "parameters": [
           {
             "name": "start",
-            "in": "path",
+            "in": "query",
             "description": "start-time",
             "required": true,
             "schema": {
@@ -146,7 +149,7 @@
           },
           {
             "name": "end",
-            "in": "path",
+            "in": "query",
             "description": "end-time",
             "required": true,
             "schema": {
@@ -155,7 +158,7 @@
           },
           {
             "name": "vehicleId",
-            "in": "path",
+            "in": "query",
             "description": "ID of vehicle",
             "required": true,
             "schema": {
@@ -166,7 +169,7 @@
         ],
         "responses": {
           "200": {
-            "description": "successful operation"
+            "description": "Successful operation"
           },
           "400": {
             "description": "Invalid parameters"

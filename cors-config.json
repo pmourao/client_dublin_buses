@@ -2,7 +2,8 @@
     {
       "origin": [
         "http://localhost:3000",
-        "https://github.com"
+        "https://github.com",
+        "https://buses-map-d1556.web.app"
       ],
       "responseHeader": ["Content-Type"],
       "method": ["OPTIONS", "GET", "POST", "PUT", "DELETE"],

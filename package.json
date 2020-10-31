@@ -35,6 +35,8 @@
     "redux-pack": "^0.1.5",
     "styled-components": "5.2.0",
     "swagger-ui": "^3.36.0",
+    "tslint": "^6.1.3",
+    "typescript": "^4.0.5",
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {
@@ -49,7 +51,7 @@
     "winBuild": "set \"GENERATE_SOURCEMAP=false\" && react-scripts build",
     "test": "react-scripts test",
     "install-all": "npm i && cd firebase_functions/functions && npm i && cd ../..",
-    "deploy-all": "npm run winBuild && firebase deploy --project buses-map && cd firebase_functions/functions && npm run build && cd .. && firebase deploy --project buses-map && cd .. ",
+    "deploy-all": "npm run winBuild && firebase deploy --project buses-map-d1556 && cd firebase_functions/functions && npm run build && cd .. && firebase deploy --project buses-map-d1556 && cd .. ",
     "deploy": "npm run deploy-all",
     "analyze": "NODE_ENV=production webpack -p --config config/webpack.config.prod.js --json --progress --profile > webpack-build-log.json && webpack-bundle-analyzer webpack-build-log.json dist/app",
     "image": "webpack-bundle-analyzer webpack-build-log.json dist/app"

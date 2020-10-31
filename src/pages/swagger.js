@@ -8,7 +8,7 @@ export default class extends React.Component {
   async componentDidMount() {
      SwaggerUi({
       dom_id: '#swaggerContainer',
-      url: `https://buses-map.web.app/api_swagger.json`,
+      url: `https://buses-map-d1556.web.app/api_swagger.json`,
       presets: [presets.apis],
     });
   }
