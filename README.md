@@ -47,7 +47,9 @@ Open http://localhost:3000 to view it in the browser.
   "apiKey": "<firebase apiKey>",
   "authDomain": "<Project-ID>.firebaseapp.com",
   "projectId": "<Project-ID>",
-  "domain": "https://us-central1-<Project-ID>.cloudfunctions.net"
+  "domain": "https://us-central1-<Project-ID>.cloudfunctions.net",
+  "mapbox_style_url" : "mapbox://styles/<USER-ID>/<style_id>",
+  "mapboxApiAccessToken" : "<API-KEY>"
 }
 ```
 ### 2. Install Firebase CLI

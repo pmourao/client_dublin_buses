@@ -13,7 +13,8 @@ import configData from "../../config.json";
 
 const mapControls = new Controls();
 const api_base_url = configData.API_URL;
-const mapbox_url = configData.MAPBOX_apiKey;
+const mapbox_style_url = configData.mapbox_style_url;
+const mapboxApiAccessToken = configData.mapboxApiAccessToken;
 class Map extends React.Component {
   constructor(props) {
     super(props);
@@ -375,10 +376,10 @@ class Map extends React.Component {
           maxZoom={15}
           {...viewport}
           height={mapHeight}
-          mapStyle={mapbox_url}
+          mapStyle={mapbox_style_url}
           onViewportChange={this.updateViewport}
           onClick={() => (popupInfo ? this.setState({ popupInfo: null }) : null)}
-          mapboxApiAccessToken="pk.eyJ1IjoicG1vdXJhbzg5IiwiYSI6ImNqaDd1ZXBxaDAwNncyeHFsd3dhbDAybnoifQ.qJue5EWgp3BoYfnfiCW7JA">
+          mapboxApiAccessToken={mapboxApiAccessToken}>
           <div style={{ position: 'absolute', left: 20, bottom: 50 }}>
             <NavigationControl onViewportChange={this.updateViewport} />
           </div>
