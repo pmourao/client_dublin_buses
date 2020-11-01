@@ -59,7 +59,7 @@ $ firebase login
 ```
 
 ### 4. Build and deploy
-
+Change the <Project-ID> on the deploy-all script in the `package.json`
 ```javascript
 $ npm run deploy
 ```
