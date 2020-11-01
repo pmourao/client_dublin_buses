@@ -3,16 +3,9 @@
 The Proof of Concept of a user interface client built using React.
 The aim of this PoC is create an interactive map that fetches data form the Restful API based on filters.
 
-
-
-## Getting started
-
-Before you can run this application, you will need to install `Node.js` on your machine.
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
 ## Project description
-This project consist in 3 pages configured under _react-router-dom_ [Home,About,Swagger]
-On the Home page there's a pane on the left with filters, a Map fulfilling the entire available area, built using MapBox react component.
+This project consist in 3 pages [Home,About,Swagger]
+On the Home as the main page there's a pane on the left with filters, a Map fulfilling the entire available area, built using MapBox react component.
 
 ### Why Mapbox?
 Mapbox is a powerful, versatile tool for creating interactive maps and visualizing geographic data. Tons of reputable companies employ it for a variety of use cases (The New York Times, Strava, and Weather Channel, to name a few).
@@ -22,7 +15,7 @@ React is widely used by most complex and modern web applications, it uses some k
 
 ## Available Scripts
 
-In the project directory, you can run:
+In the project directory, assuming you have the latest `Node.js` installed, you can run:
 ### To run for Development.
 
 ### `npm run install-all`
@@ -35,9 +28,6 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.<br>
 You will also see any lint errors in the console.
-
-Runs the app in the development mode.
-Open http://localhost:3000 to view it in the browser.
 
 ## Production
 
@@ -60,7 +50,7 @@ Install the Firebase CLI by running the following command:
 $ npm install -g firebase-tools
 ```
 
-### 3. Log in fo Firebase
+### 3. Log in on Firebase
 
 Log in to Firebase (for the first time use). Follow instructions on the screen.
 
@@ -76,4 +66,6 @@ $ npm run deploy
 
 ## DEMO
 
-Demo available [here](https://buses-map-d1556.web.app/demo_dashboard.png)
+[Demo available **here**](https://buses-map-d1556.web.app)
+
+![screenshot](https://buses-map-d1556.web.app/demo_dashboard.png)
