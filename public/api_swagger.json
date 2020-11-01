@@ -11,7 +11,7 @@
     }
   ],
   "paths": {
-    "/v1/": {
+    "/v1": {
       "get": {
         "summary": "API version",
         "description": "root",
@@ -35,12 +35,12 @@
           "Operators"
         ],
         "summary": "Available Operators in a interval of time",
-        "description": "Returns list of available Operators",
+        "description": "Returns list of available Operators.",
         "parameters": [
           {
             "name": "start",
             "in": "query",
-            "description": "start-time",
+            "description": "YYYY-mm-ddThh:mm:ss",
             "required": true,
             "schema": {
               "type": "string",
@@ -50,7 +50,7 @@
           {
             "name": "end",
             "in": "query",
-            "description": "end-time",
+            "description": "YYYY-mm-ddThh:mm:ss",
             "required": true,
             "schema": {
               "type": "string",
@@ -83,7 +83,7 @@
           {
             "name": "start",
             "in": "query",
-            "description": "start-time",
+            "description": "YYYY-mm-ddThh:mm:ss",
             "required": true,
             "schema": {
               "type": "string"
@@ -92,7 +92,7 @@
           {
             "name": "end",
             "in": "query",
-            "description": "end-time",
+            "description": "YYYY-mm-ddThh:mm:ss",
             "required": true,
             "schema": {
               "type": "string"
@@ -141,7 +141,7 @@
           {
             "name": "start",
             "in": "query",
-            "description": "start-time",
+            "description": "YYYY-mm-ddThh:mm:ss",
             "required": true,
             "schema": {
               "type": "string"
@@ -150,7 +150,7 @@
           {
             "name": "end",
             "in": "query",
-            "description": "end-time",
+            "description": "YYYY-mm-ddThh:mm:ss",
             "required": true,
             "schema": {
               "type": "string"

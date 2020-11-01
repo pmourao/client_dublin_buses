@@ -13,6 +13,8 @@ Mapbox is a powerful, versatile tool for creating interactive maps and visualizi
 ### Why React?
 React is widely used by most complex and modern web applications, it uses some kind of library or structure. It is actually quite overkill for the current example, but it is a good example to start with.
 
+### Restful API
+The Restful API service documentation is available [here](https://github.com/pmourao/api_dublin_buses) 
 ## Available Scripts
 
 In the project directory, assuming you have the latest `Node.js` installed, you can run:
