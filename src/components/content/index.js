@@ -26,6 +26,9 @@ export default class Content extends React.Component {
             )
           }
         </DIV>
+        <DIV>
+        <a href="https://www.w3schools.com">Visit W3Schools</a>
+        </DIV>
       </SECTION>
     );
   }

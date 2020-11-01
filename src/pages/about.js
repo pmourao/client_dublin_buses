@@ -2,10 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import BurgerMenu from '../components/burger/burger';
 import Content from '../components/content';
-
 const contentIntroduction1 = {
   title: 'About',
-  text: `In this PoC lksdjhfklghdslkjfhdslkihfl, `,
+  text: `This is a proof of concept of a user interface client built using React.
+The aim of this PoC is create an interactive map that fetches data form the Restful API based on filters.
+`,
 };
 
 export default class extends React.Component {

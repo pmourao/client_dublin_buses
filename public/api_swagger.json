@@ -61,7 +61,7 @@
         ],
         "responses": {
           "200": {
-            "description": "successful operation"
+            "description": "Successful operation"
           },
           "400": {
             "description": "Invalid time-frame"
@@ -110,22 +110,22 @@
           {
             "name": "stop",
             "in": "query",
-            "description": "ID of Fleet",
+            "description": "Activity Status",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "successful operation"
+            "description": "Successful operation"
           },
           "400": {
             "description": "Invalid parameters"
           },
           "404": {
-            "description": "not found"
+            "description": "Not found"
           }
         }
       }

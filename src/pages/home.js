@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { withRouter } from 'react-router';
 import BurgerMenu from '../components/burger/burger';
 import Map from '../components/map';
-
 class HomePage extends React.Component {
 
   render() {

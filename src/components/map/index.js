@@ -9,10 +9,11 @@ import Controls from './controls';
 import Markers from './markers';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import configData from "../../config.json";
 
 const mapControls = new Controls();
-const api_base_url = "https://api-l3qyhmfh2a-ew.a.run.app"
-const mapbox_url = "mapbox://styles/pmourao89/ckgs56su80vqo19px9kluuvq3"
+const api_base_url = configData.API_URL;
+const mapbox_url = configData.MAPBOX_apiKey;
 class Map extends React.Component {
   constructor(props) {
     super(props);
@@ -49,6 +50,7 @@ class Map extends React.Component {
     this.handleVehicleChange = this.handleVehicleChange.bind(this);
     this.handleOperatorChange = this.handleOperatorChange.bind(this);
     this.filterDay = this.filterDay.bind(this);
+    this.formatTimeString = this.formatTimeString.bind(this);
   }
 
   componentDidMount() {
@@ -62,6 +64,12 @@ class Map extends React.Component {
   componentWillUnmount() {
     window.removeEventListener('resize', this.resize);
   }
+  
+  formatTimeString(date){
+        return  date.getUTCFullYear() + "-" + parseInt(date.getMonth()) + "-" + ('0' + date.getDate()).substr(-2)
+     + 'T' + ('0' + date.getHours()).substr(-2) + ':' + ('0' + date.getMinutes()).substr(-2) + ':' + ('0' + date.getSeconds()).substr(-2);
+
+  }
 
   getOperators(start, end) {
     this.setState({
@@ -70,12 +78,8 @@ class Map extends React.Component {
     });
     var operators = []
     
-    let startStr = + start.getUTCFullYear() + "-" + parseInt(start.getMonth()) + "-" + ('0' + start.getDate()).substr(-2)
-     + 'T' + ('0' + this.state.startDate.getHours()).substr(-2) + ':' + ('0' + start.getMinutes()).substr(-2) + ':' + ('0' + start.getSeconds()).substr(-2);
-    
-    let endStr = end.getUTCFullYear() + "-" + parseInt(end.getMonth()) + "-" + ('0' + end.getDate()).substr(-2)
-     + 'T' + ('0' + end.getHours()).substr(-2) + ':' + ('0' + end.getMinutes()).substr(-2) + ':' + ('0' + end.getSeconds()).substr(-2);
-    
+    let startStr = this.formatTimeString(this.state.startDate)
+    let endStr = this.formatTimeString(this.state.endDate)
     const apiUrl = api_base_url + '/v1/operators?start=' + startStr + '&end=' + endStr;
     
     fetch(apiUrl, {
@@ -114,12 +118,8 @@ class Map extends React.Component {
     var vehicles = []
     var vehicles_labels = []
     
-    let startStr = + this.state.startDate.getUTCFullYear() + "-" + parseInt(this.state.startDate.getMonth())+ "-" + ('0' + this.state.startDate.getDate()).substr(-2)
-     + 'T' + ('0' + this.state.startDate.getHours()).substr(-2) + ':' + ('0' + this.state.startDate.getMinutes()).substr(-2) + ':' + ('0' + this.state.startDate.getSeconds()).substr(-2);
-    
-    let endStr = this.state.endDate.getUTCFullYear() + "-" + parseInt(this.state.endDate.getMonth()) + "-" + ('0' + this.state.endDate.getDate()).substr(-2)
-     + 'T' + ('0' + this.state.endDate.getHours()).substr(-2) + ':' + ('0' + this.state.endDate.getMinutes()).substr(-2) + ':' + ('0' + this.state.endDate.getSeconds()).substr(-2);
-    
+    let startStr = this.formatTimeString(this.state.startDate)
+    let endStr = this.formatTimeString(this.state.endDate)
     const apiUrl = api_base_url + '/v1/vehicles?start=' + startStr + '&end=' + endStr + '&operator=' + operatorId + '&atstop=false';
     
     fetch(apiUrl, {
@@ -127,12 +127,13 @@ class Map extends React.Component {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     })
-      .then(response => response.json())
+     .then(response => {
+        if(!response.ok) throw new Error(response.status);
+        else return response.json();
+        })
       .then(responseJson => {
         responseJson['response']['vehicles'].forEach((elem) => {
-          if (!vehicles.includes(elem['vehicleId'])) vehicles.push(elem['vehicleId'])
-        });
-
+          if (!vehicles.includes(elem['vehicleId'])) vehicles.push(elem['vehicleId'])});
 
         vehicles.forEach(elem =>
           vehicles_labels.push({
@@ -159,13 +160,8 @@ class Map extends React.Component {
       loadingVehicles: true,
     });
     var positions = []
-    
-    let startStr = + this.state.startDate.getUTCFullYear() + "-" + parseInt(this.state.startDate.getMonth()) + "-" + ('0' + this.state.startDate.getDate()).substr(-2)
-     + 'T' + ('0' + this.state.startDate.getHours()).substr(-2) + ':' + ('0' + this.state.startDate.getMinutes()).substr(-2) + ':' + ('0' + this.state.startDate.getSeconds()).substr(-2);
-    
-    let endStr = this.state.endDate.getUTCFullYear() + "-" + parseInt(this.state.endDate.getMonth()) + "-" + ('0' + this.state.endDate.getDate()).substr(-2)
-     + 'T' + ('0' + this.state.endDate.getHours()).substr(-2) + ':' + ('0' + this.state.endDate.getMinutes()).substr(-2) + ':' + ('0' + this.state.endDate.getSeconds()).substr(-2);
-    
+    let startStr = this.formatTimeString(this.state.startDate)
+    let endStr = this.formatTimeString(this.state.endDate)
     const apiUrl = api_base_url + '/v1/vehicles/' + vehicleId + '?start=' + startStr + '&end=' + endStr;
     
     fetch(apiUrl, {
@@ -173,7 +169,10 @@ class Map extends React.Component {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     })
-      .then(response => response.json())
+     .then(response => {
+        if(!response.ok) throw new Error(response.status);
+        else return response.json();
+        })
       .then(responseJson => {
         responseJson['response']['locations'].forEach((elem, index) => positions.push(
           {
